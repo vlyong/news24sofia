@@ -1,0 +1,45 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: #f8fafc; /* Светъл, premium фон */
+    --foreground: #0f172a; /* Тъмен текст */
+    --card-bg: rgba(255, 255, 255, 0.7);
+    --card-border: rgba(0, 0, 0, 0.05);
+    --card-hover-border: rgba(0, 0, 0, 0.1);
+  }
+
+  .dark {
+    --background: #0a0a0a; /* Дълбок тъмен фон */
+    --foreground: #ededed; /* Светъл текст */
+    --card-bg: rgba(255, 255, 255, 0.03);
+    --card-border: rgba(255, 255, 255, 0.1);
+    --card-hover-border: rgba(255, 255, 255, 0.2);
+  }
+
+  .mobile-menu-inner {
+    background-color: #f8fafc !important;
+  }
+
+  .dark .mobile-menu-inner {
+    background-color: #0a0a0a !important;
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: var(--font-inter), Arial, Helvetica, sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+@keyframes custom-wave {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.5); opacity: 0.5; }
+}
+
+.animate-custom-wave {
+  animation: custom-wave 2s infinite ease-in-out;
+}
