@@ -7,30 +7,41 @@ export const revalidate = 60;
 export default async function Home() {
   const settings = await getSettings();
   
-  // 1. Prepare data for all widgets
-  const widgetDataPromises = settings.homepageLayout.map(async (widget) => {
-    if (!widget.active) return { widget, posts: [] };
+  // Рекурсивна функция за извличане на всички уникални уиджети (включително вложените в редове)
+  const getAllWidgets = (widgets: any[]): any[] => {
+    let all: any[] = [];
+    widgets.forEach(w => {
+      all.push(w);
+      if (w.type === 'row' && w.columns) {
+        w.columns.forEach((col: any) => {
+          all = all.concat(getAllWidgets(col.widgets));
+        });
+      }
+    });
+    return all;
+  };
 
-    let posts = [];
+  const allWidgets = getAllWidgets(settings.homepageLayout);
+  const widgetPosts: Record<string, any[]> = {};
+
+  await Promise.all(allWidgets.map(async (widget) => {
+    if (!widget.active || widget.type === 'row') return;
+
     try {
       if (widget.type === 'hero') {
         const data = await fetchAPI(GET_ALL_POSTS);
-        posts = (data?.posts?.nodes || []).slice(0, 4);
+        widgetPosts[widget.id] = (data?.posts?.nodes || []).slice(0, 4);
       } else if (widget.type === 'video') {
         const data = await fetchAPI(GET_POSTS_BY_CATEGORY, { variables: { categoryName: widget.categoryName || "news24" } });
-        posts = (data?.posts?.nodes || []).slice(0, widget.limit || 3);
+        widgetPosts[widget.id] = (data?.posts?.nodes || []).slice(0, widget.limit || 3);
       } else if (widget.type === 'category') {
         const data = await fetchAPI(GET_POSTS_BY_CATEGORY, { variables: { categoryName: widget.categoryName } });
-        posts = (data?.posts?.nodes || []).slice(0, widget.limit || 4);
+        widgetPosts[widget.id] = (data?.posts?.nodes || []).slice(0, widget.limit || 4);
       }
     } catch (error) {
       console.error(`Error fetching data for widget ${widget.id}:`, error);
     }
-
-    return { widget, posts };
-  });
-
-  const resolvedWidgets = await Promise.all(widgetDataPromises);
+  }));
 
   return (
     <main className="min-h-screen pb-24">
@@ -73,8 +84,13 @@ export default async function Home() {
       )}
 
       <div className="container mx-auto px-4">
-        {resolvedWidgets.map(({ widget, posts }) => (
-          <WidgetRenderer key={widget.id} widget={widget} posts={posts} />
+        {settings.homepageLayout.map((widget: any) => (
+          <WidgetRenderer 
+            key={widget.id} 
+            widget={widget} 
+            posts={widgetPosts[widget.id] || []} 
+            allWidgetPosts={widgetPosts} // Pass everything for recursion
+          />
         ))}
       </div>
     </main>

@@ -7,12 +7,19 @@ export interface BreakingNewsItem {
 
 export interface HomeWidget {
   id: string;
-  type: 'hero' | 'category' | 'video' | 'ad';
+  type: 'hero' | 'category' | 'video' | 'ad' | 'row';
   title?: string;
   categoryName?: string;
   limit?: number;
   adSlot?: string;
   active: boolean;
+  columns?: HomeColumn[]; // За тип 'row'
+}
+
+export interface HomeColumn {
+  id: string;
+  width: string; // Еквивалент на col-span (напр. '12', '8', '4', '6')
+  widgets: HomeWidget[];
 }
 
 export interface SiteSettings {
