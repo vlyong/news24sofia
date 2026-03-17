@@ -336,7 +336,7 @@ export default function AdminDashboard() {
                     <input 
                         type="url" 
                         id="index-url"
-                        placeholder="https://news24sofia.eu/article/vashata-novina"
+                        placeholder="https://news24sofia.eu/vashata-novina"
                         className="flex-1 bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#4285F4]/50"
                     />
                     <button 

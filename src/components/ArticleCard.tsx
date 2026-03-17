@@ -21,7 +21,7 @@ export default function ArticleCard({ slug, title, excerpt, category, imageUrl, 
 
   return (
     <Link 
-      href={`/article/${slug}`} 
+      href={`/${slug}`} 
       className={`group flex flex-col relative overflow-hidden rounded-2xl bg-background border border-black/5 dark:border-white/5 hover:shadow-2xl transition-all duration-500 ${isLarge ? 'md:col-span-2' : ''}`}
     >
       {/* Image Container */}

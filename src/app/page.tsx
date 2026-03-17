@@ -127,7 +127,7 @@ export default async function Home() {
                 {/* Video Playlist */}
                 <div className="lg:col-span-4 flex flex-col gap-6">
                     {videoPosts.slice(1).map((v: any) => (
-                        <Link key={v.id} href={`/article/${v.slug}`} className="flex gap-4 group cursor-pointer bg-white/5 p-4 rounded-2xl border border-white/5 hover:bg-white/10 transition-colors">
+                        <Link key={v.id} href={`/${v.slug}`} className="flex gap-4 group cursor-pointer bg-white/5 p-4 rounded-2xl border border-white/5 hover:bg-white/10 transition-colors">
                             <div className="relative w-32 aspect-video rounded-lg overflow-hidden shrink-0">
                                 <Image 
                                     src={v.featuredImage?.node?.sourceUrl || ""} 

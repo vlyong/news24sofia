@@ -20,7 +20,7 @@ export async function GET() {
       const title = post.title.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
       return `
   <url>
-    <loc>${baseUrl}/article/${post.slug}</loc>
+    <loc>${baseUrl}/${post.slug}</loc>
     <news:news>
       <news:publication>
         <news:name>News24Sofia</news:name>

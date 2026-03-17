@@ -30,7 +30,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const posts = data?.posts?.nodes || [];
     
     articleRoutes = posts.map((post: any) => ({
-      url: `${baseUrl}/article/${post.slug}`,
+      url: `${baseUrl}/${post.slug}`,
       lastModified: new Date(post.modified || post.date || new Date()),
       changeFrequency: 'daily' as const,
       priority: 0.6,

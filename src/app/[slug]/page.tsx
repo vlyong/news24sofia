@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     openGraph: {
       title: title,
       description: description,
-      url: `https://news24sofia.eu/article/${post.slug}`,
+      url: `https://news24sofia.eu/${post.slug}`,
       siteName: 'News24Sofia',
       images: [
         {
