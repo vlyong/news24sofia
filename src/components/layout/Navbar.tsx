@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Menu, Search, X, ChevronDown } from 'lucide-react';
+import { Menu, Search, X, ChevronDown, MonitorPlay } from 'lucide-react';
 import { ThemeToggle } from '../ThemeToggle';
 import { useTheme } from '../ThemeProvider';
 import { useState, useEffect } from 'react';
@@ -30,215 +30,290 @@ export default function Navbar() {
     setMounted(true);
   }, []);
 
-  const isDark = mounted && (
-    theme === "dark" ||
-    (theme === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches)
-  );
-  
-  const navLinks = [
-    { name: 'КРИМИ', href: '/category/krimi' },
-    { name: 'ПОЛИТИКА', href: '/category/politics' },
-    { name: 'ОБЩЕСТВО', href: '/category/community' },
-    { 
-      name: 'РЕГИОНИ', 
-      href: '/category/regioni',
-      subLinks: [
-        { name: 'София', href: '/category/sofiya' },
-        { name: 'Пловдив', href: '/category/plovdiv' },
-        { name: 'Варна', href: '/category/varna' },
-        { name: 'Бургас', href: '/category/burgas' },
-        { name: 'Благоевград', href: '/category/blagoevgrad' },
-      ]
-    },
-    { 
-      name: 'ИКОНОМИКА', 
-      href: '/category/iconomic',
-      subLinks: [
-        { name: 'Бизнес', href: '/category/biznes' },
-        { name: 'Икономика', href: '/category/iconomic' },
-      ]
-    },
-    { 
-      name: 'ЗДРАВЕ', 
-      href: '/category/health',
-      subLinks: [
-        { name: 'Здравни новини', href: '/category/health-news' },
-        { name: 'Здравословно', href: '/category/healthy' },
-      ]
-    },
-    { name: 'СВЯТ', href: '/category/world' },
-    { name: 'СПОРТ', href: '/category/sport' },
+  const cities = [
+    { name: 'София', href: '/category/sofiya', color: 'bg-[#120a8f]' },
+    { name: 'Пловдив', href: '/category/plovdiv', color: 'bg-[#cc0000]' },
+    { name: 'Варна', href: '/category/varna', color: 'bg-[#00a2e8]' },
+    { name: 'Бургас', href: '/category/burgas', color: 'bg-[#ffc90e]' },
+    { name: 'Русе', href: '/category/ruse', color: 'bg-[#22b14c]' },
+    { name: 'Стара Загора', href: '/category/stara-zagora', color: 'bg-[#333333]' },
+    { name: 'Плевен', href: '/category/pleven', color: 'bg-[#ff7f27]' },
   ];
+
+  const mainLinks = [
+    { 
+      name: 'ОБЩЕСТВО', 
+      href: '/category/community',
+      subLinks: [
+        { name: 'Региони', href: '/category/regioni' },
+        { name: 'Екология', href: '/category/ecology' },
+      ]
+    },
+    { name: 'NEWS24 TV', href: '/tv', isRed: true },
+    { name: 'ПОЛИТИКА', href: '/category/politics' },
+    { name: 'КРИМИ', href: '/category/krimi' },
+    { name: 'СВЯТ', href: '/category/world' },
+    { name: 'БИЗНЕС', href: '/category/biznes' },
+    { name: 'ИКОНОМИКА', href: '/category/iconomic' },
+    { name: 'СПОРТ', href: '/category/sport' },
+    { name: 'ЗДРАВЕ', href: '/category/health' },
+    { name: 'ЛЮБОПИТНО', href: '/category/curious' },
+    { name: 'КОМЕНТАРИ', href: '/category/comments' },
+    { name: 'НАУКА', href: '/category/science' },
+    { name: 'LIFESTYLE', href: '/category/lifestyle' },
+  ];
+
   return (
     <>
-      <nav className="sticky top-0 z-50 w-full border-b border-black/10 dark:border-white/10 bg-background/80 backdrop-blur-md">
-      <div className="container mx-auto px-4 h-16 flex items-center justify-between">
+      <nav className="sticky top-0 z-50 w-full bg-[#fcfbf7] dark:bg-black border-b border-[#120a8f]">
         
-        {/* Left: Mobile Menu */}
-        <div className="flex items-center gap-4 lg:hidden">
-          <button 
-            onClick={() => setIsMobileMenuOpen(true)}
-            className="p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-full transition-colors"
-          >
-            <Menu className="w-6 h-6 text-foreground" />
-          </button>
-        </div>
-
-        {/* Logo */}
-        <div className="flex-shrink-0">
-          <Link href="/" className="text-2xl font-bold tracking-tighter brand-text">
-            NEWS24 <span className="text-brand-red">SOFIA</span>
+        {/* TOP ROW: Logo, Cities, Weather */}
+        <div className="hidden lg:flex container mx-auto px-4 h-24 items-center justify-between">
+          {/* Logo */}
+          <Link href="/" className="flex items-center flex-shrink-0 mr-8">
+            <span className="text-[42px] font-black italic tracking-tighter" style={{ fontFamily: 'Impact, sans-serif' }}>
+              <span className="text-[#120a8f] dark:text-white">NEWS</span>
+              <span className="text-[#cc0000]">24</span>
+            </span>
           </Link>
-        </div>
 
-        {/* Desktop Navigation */}
-        <div className="hidden lg:flex items-center gap-6 font-medium text-sm">
-          {navLinks.map((link) => {
-            const isActive = pathname === link.href;
-            return (
-              <div key={link.href} className="relative group py-6">
-                <Link 
-                  href={link.href} 
-                  className={`transition-colors flex items-center gap-1 ${
-                    isActive 
-                      ? 'text-brand-red' 
-                      : 'text-foreground/80 hover:text-brand-red'
-                  }`}
-                >
-                  {link.name}
-                  {link.subLinks && <ChevronDown className="w-4 h-4 opacity-50 group-hover:rotate-180 transition-transform" />}
-                </Link>
-                
-                {link.subLinks && (
-                  <div className="absolute top-full left-0 w-48 bg-background border border-black/10 dark:border-white/10 rounded-xl shadow-2xl opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all p-2 z-[100]">
-                    {link.subLinks.map((sub) => (
-                      <Link
-                        key={sub.href}
-                        href={sub.href}
-                        className="block px-4 py-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg text-xs transition-colors"
-                      >
-                        {sub.name}
-                      </Link>
-                    ))}
-                  </div>
-                )}
-
-                {isActive && (
-                  <span className="absolute bottom-4 left-0 w-full h-0.5 bg-brand-red rounded-full" />
-                )}
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Right: Actions */}
-        <div className="flex items-center gap-2">
-          {isSearchOpen ? (
-            <form onSubmit={handleSearch} className="relative flex items-center">
-              <input 
-                autoFocus
-                type="text" 
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Търсене..." 
-                className="w-48 lg:w-64 bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-full py-1.5 pl-4 pr-10 text-sm focus:outline-none focus:border-brand-red transition-all"
-              />
-              <button 
-                type="button"
-                onClick={() => setIsSearchOpen(false)}
-                className="absolute right-3 text-foreground/50 hover:text-foreground"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </form>
-          ) : (
-            <button 
-              onClick={() => setIsSearchOpen(true)}
-              className="p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-full transition-colors"
-            >
-              <Search className="w-5 h-5 text-foreground" />
-            </button>
-          )}
-          <ThemeToggle />
-        </div>
-
-      </div>
-
-    </nav>
-    
-    {/* Mobile Menu Overlay - Outside nav to avoid z-index/blur bugs */}
-    {isMobileMenuOpen && (
-      <div className="fixed inset-0 z-[60] flex lg:hidden">
-        <div 
-          className="fixed inset-0 bg-black/80 backdrop-blur-md" 
-          onClick={() => setIsMobileMenuOpen(false)}
-        />
-        <div 
-          className="relative w-4/5 max-w-sm h-full border-r border-black/10 dark:border-white/10 p-6 flex flex-col gap-8 shadow-2xl mobile-menu-inner"
-        >
-          <div className="flex items-center justify-between">
-            <Link href="/" className="text-xl font-bold tracking-tighter brand-text" onClick={() => setIsMobileMenuOpen(false)}>
-              NEWS24 <span className="text-brand-red">SOFIA</span>
-            </Link>
-            <button 
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-full transition-colors"
-            >
-              <X className="w-6 h-6 text-foreground" />
-            </button>
-          </div>
-
-          <div className="flex items-center gap-4 px-2">
-            <form onSubmit={handleSearch} className="relative flex-1">
-              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-foreground/50" />
-              <input 
-                type="text" 
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Търсене..." 
-                className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-full py-2 pl-9 pr-4 text-sm focus:outline-none focus:border-brand-red transition-colors"
-              />
-            </form>
-          </div>
-
-          <nav className="flex flex-col gap-1 overflow-y-auto">
-            {navLinks.map((link) => {
-              const isActive = pathname === link.href;
-              const hasSub = !!link.subLinks;
-              return (
-                <div key={link.href} className="flex flex-col">
+          {/* Cities with colored underline */}
+          <div className="flex-1 flex justify-center h-full items-end pb-4 pt-10">
+            <div className="flex items-center">
+              {cities.map((city, i) => (
+                <div key={city.name} className="flex flex-col">
                   <Link 
-                    href={link.href} 
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className={`text-lg font-bold py-3 px-4 rounded-lg transition-colors flex items-center justify-between ${
-                      isActive 
-                        ? 'bg-brand-red text-white' 
-                        : 'text-foreground/80 hover:bg-black/5 dark:hover:bg-white/5'
-                    }`}
+                    href={city.href}
+                    className="px-3 text-[17px] font-bold text-[#120a8f] dark:text-white hover:opacity-80 transition-opacity whitespace-nowrap mb-1"
                   >
-                    {link.name}
+                    {city.name}
                   </Link>
-                  {hasSub && (
-                    <div className="flex flex-wrap gap-2 px-4 py-2">
-                      {link.subLinks?.map((sub) => (
-                        <Link
-                          key={sub.href}
-                          href={sub.href}
-                          onClick={() => setIsMobileMenuOpen(false)}
-                          className="text-xs font-medium py-1.5 px-3 rounded-full bg-black/5 dark:bg-white/5 text-foreground/60 hover:text-brand-red hover:bg-brand-red/10 transition-colors"
-                        >
-                          {sub.name}
-                        </Link>
-                      ))}
-                    </div>
-                  )}
+                  <div className={`h-[5px] w-full ${city.color}`}></div>
                 </div>
-              );
-            })}
-          </nav>
+              ))}
+            </div>
+          </div>
+
+          {/* Weather Widget (Static for now based on image) */}
+          <div className="flex items-center gap-3 ml-8 flex-shrink-0">
+            <div className="w-6 h-8 border-[3px] border-[#ffc90e] rounded-sm"></div>
+            <div className="flex flex-col leading-none">
+              <span className="text-[13px] text-[#120a8f] dark:text-white/80 uppercase font-medium">времето в</span>
+              <span className="text-[22px] font-bold text-[#120a8f] dark:text-white tracking-tight">Враца 11°</span>
+            </div>
+            {/* Theme Toggle in Desktop next to Weather */}
+            <div className="ml-4 pl-4 border-l border-gray-300 dark:border-gray-700">
+                <ThemeToggle />
+            </div>
+          </div>
         </div>
-      </div>
-    )}
-  </>
-);
+
+        {/* BOTTOM ROW: Navigation Links */}
+        <div className="bg-[#120a8f] dark:bg-[#0a0550] w-full relative">
+          <div className="container mx-auto px-4 h-[42px] flex items-center justify-between">
+            
+            {/* Mobile Top Bar inside Blue Bar */}
+            <div className="flex items-center justify-between w-full lg:hidden h-full">
+              <button 
+                onClick={() => setIsMobileMenuOpen(true)}
+                className="p-1.5 text-white hover:bg-white/10 rounded transition-colors"
+              >
+                <Menu className="w-6 h-6" />
+              </button>
+              
+              <Link href="/" className="flex items-center">
+                <span className="text-xl font-black italic tracking-tighter" style={{ fontFamily: 'Impact, sans-serif' }}>
+                  <span className="text-white">NEWS</span>
+                  <span className="text-[#cc0000]">24</span>
+                </span>
+              </Link>
+              
+              <div className="flex items-center space-x-1">
+                 <button 
+                  onClick={() => setIsSearchOpen(!isSearchOpen)}
+                  className="p-1.5 text-white hover:bg-white/10 rounded transition-colors"
+                >
+                  <Search className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+
+            {/* Desktop Navigation */}
+            <div className="hidden lg:flex items-center h-full font-bold text-[13px] text-white w-full">
+              {mainLinks.map((link) => {
+                const isActive = pathname === link.href;
+                const hasSub = !!link.subLinks;
+                
+                if (link.isRed) {
+                  return (
+                    <Link 
+                      key={link.name}
+                      href={link.href}
+                      className="h-full px-4 flex items-center bg-[#cc0000] hover:bg-[#a00000] text-white transition-colors"
+                    >
+                      {link.name}
+                    </Link>
+                  );
+                }
+
+                return (
+                  <div key={link.name} className="relative group h-full flex items-center">
+                    <Link 
+                      href={link.href} 
+                      className={`h-full px-3 flex items-center gap-1 transition-colors hover:text-gray-300 ${
+                        isActive ? 'text-gray-200' : 'text-white'
+                      }`}
+                    >
+                      {link.name}
+                      {hasSub && <ChevronDown className="w-3 h-3 transition-transform group-hover:rotate-180" />}
+                    </Link>
+                    
+                    {hasSub && (
+                      <div className="absolute top-full left-0 w-48 bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-gray-800 rounded-b-lg shadow-xl opacity-0 translate-y-1 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all py-2 z-[100]">
+                        {link.subLinks.map((sub) => (
+                          <Link
+                            key={sub.name}
+                            href={sub.href}
+                            className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-white/5 text-gray-800 dark:text-gray-200 text-sm transition-colors"
+                          >
+                            {sub.name}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+              
+              {/* Spacer */}
+              <div className="flex-1"></div>
+
+              {/* Desktop Search Icon */}
+              <div className="h-full flex items-center pl-4">
+                 <button 
+                  onClick={() => setIsSearchOpen(!isSearchOpen)}
+                  className="text-white hover:text-gray-300 transition-colors h-full flex items-center px-2"
+                 >
+                   <Search className="w-4 h-4" />
+                 </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Global Search Bar Dropdown */}
+        {isSearchOpen && (
+           <div className="absolute top-full left-0 w-full bg-[#120a8f] dark:bg-[#0a0550] border-t border-white/10 p-4 shadow-xl z-50">
+             <div className="container mx-auto px-4">
+                <form onSubmit={handleSearch} className="relative flex items-center max-w-2xl mx-auto">
+                  <input 
+                    autoFocus
+                    type="text" 
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Търсене в новините..." 
+                    className="w-full bg-white/10 text-white placeholder-white/50 border border-white/20 rounded-full py-2.5 pl-5 pr-12 text-sm focus:outline-none focus:border-white/50 transition-all font-medium"
+                  />
+                  <button 
+                    type="submit"
+                    className="absolute right-4 text-white hover:text-gray-300"
+                  >
+                    <Search className="w-5 h-5" />
+                  </button>
+                </form>
+             </div>
+           </div>
+        )}
+
+      </nav>
+      
+      {/* Mobile Menu Sidebar */}
+      {isMobileMenuOpen && (
+        <div className="fixed inset-0 z-[100] flex lg:hidden">
+          <div 
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm" 
+            onClick={() => setIsMobileMenuOpen(false)}
+          />
+          <div className="relative w-4/5 max-w-sm h-full bg-white dark:bg-[#0a0a0a] flex flex-col shadow-2xl overflow-y-auto">
+            <div className="flex items-center justify-between p-4 border-b border-gray-100 dark:border-white/10 bg-[#fcfbf7] dark:bg-black">
+              <Link href="/" className="text-2xl font-black italic tracking-tighter" style={{ fontFamily: 'Impact, sans-serif' }} onClick={() => setIsMobileMenuOpen(false)}>
+                <span className="text-[#120a8f] dark:text-white">NEWS</span>
+                <span className="text-[#cc0000]">24</span>
+              </Link>
+              <button 
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="p-2 text-gray-500 hover:bg-gray-100 dark:hover:bg-white/10 rounded-full transition-colors"
+              >
+                <X className="w-6 h-6 text-foreground" />
+              </button>
+            </div>
+
+            {/* Mobile Cities */}
+            <div className="p-4 grid grid-cols-2 gap-2 border-b border-gray-100 dark:border-white/10">
+               {cities.map((city) => (
+                  <Link 
+                    key={city.name}
+                    href={city.href}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="text-xs font-bold text-gray-700 dark:text-gray-300 flex items-center gap-2 hover:bg-gray-50 dark:hover:bg-white/5 p-2 rounded"
+                  >
+                    <div className={`w-2 h-2 rounded-full ${city.color}`}></div>
+                    {city.name}
+                  </Link>
+               ))}
+               <div className="col-span-2 mt-2 pt-2 border-t border-gray-100 dark:border-white/10 flex items-center gap-2">
+                 <div className="w-4 h-4 border-2 border-[#ffc90e] rounded-sm"></div>
+                 <span className="text-xs font-medium dark:text-gray-400">времето в</span>
+                 <span className="text-sm font-bold text-[#120a8f] dark:text-white">Враца 11°</span>
+               </div>
+            </div>
+
+            {/* Mobile Nav Links */}
+            <nav className="flex flex-col p-2">
+              {mainLinks.map((link) => {
+                const hasSub = !!link.subLinks;
+                return (
+                  <div key={link.name} className="flex flex-col">
+                    <Link 
+                      href={link.href} 
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className={`text-[15px] font-bold py-3 px-4 rounded-lg transition-colors flex items-center justify-between ${
+                         link.isRed 
+                          ? 'bg-[#cc0000] text-white hover:bg-[#a00000] mb-2' 
+                          : 'text-gray-800 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-white/5'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2">
+                        {link.isRed && <MonitorPlay className="w-4 h-4" />}
+                        {link.name}
+                      </div>
+                    </Link>
+                    {hasSub && (
+                      <div className="flex flex-wrap gap-2 px-4 pb-2">
+                        {link.subLinks?.map((sub) => (
+                          <Link
+                            key={sub.name}
+                            href={sub.href}
+                            onClick={() => setIsMobileMenuOpen(false)}
+                            className="text-xs font-medium py-1.5 px-3 rounded-full bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300 hover:bg-[#add8e6] dark:hover:bg-[#120a8f] transition-colors"
+                          >
+                            {sub.name}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </nav>
+            
+            <div className="mt-auto p-4 border-t border-gray-100 dark:border-white/10 flex items-center justify-between">
+                <span className="text-xs font-medium text-gray-500">Предпочитания за тема:</span>
+                <ThemeToggle />
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
 }
